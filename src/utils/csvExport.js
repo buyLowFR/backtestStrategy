@@ -52,3 +52,19 @@ export function exportTradesToCSV(trades, outputPath) {
   fs.writeFileSync(outputPath, csvContent, "utf8");
   console.log(`Journal de trades exporté dans : ${outputPath}`);
 }
+
+/**
+ * Exporte une courbe d'equity dans un fichier CSV.
+ *
+ * @param {number[]} equityCurve - Liste des valeurs d'equity
+ * @param {string} filepath - Chemin du fichier CSV à créer
+ */
+export function exportEquityCurveToCSV(equityCurve, filepath) {
+  const header = "index,equity\n";
+
+  const rows = equityCurve
+    .map((value, i) => `${i},${value}`)
+    .join("\n");
+
+  fs.writeFileSync(filepath, header + rows, "utf8");
+}

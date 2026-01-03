@@ -78,3 +78,30 @@ export function globalMetrics(allTrades) {
     totalProfit
   };
 }
+
+export function sharpeFromEquityCurve(equityCurve) {
+  if (!equityCurve || equityCurve.length < 2) return 0;
+
+  // 1) Calcul des rendements journaliers
+  const returns = [];
+  for (let i = 1; i < equityCurve.length; i++) {
+    const r = (equityCurve[i] - equityCurve[i - 1]) / equityCurve[i - 1];
+    returns.push(r);
+  }
+
+  if (returns.length === 0) return 0;
+
+  // 2) Moyenne des rendements
+  const avg = returns.reduce((a, b) => a + b, 0) / returns.length;
+
+  // 3) Volatilité (écart-type)
+  const variance =
+    returns.reduce((acc, r) => acc + Math.pow(r - avg, 2), 0) /
+    returns.length;
+
+  const stdDev = Math.sqrt(variance);
+  if (stdDev === 0) return 0;
+
+  // 4) Sharpe annualisé
+  return (avg / stdDev) * Math.sqrt(252);
+}

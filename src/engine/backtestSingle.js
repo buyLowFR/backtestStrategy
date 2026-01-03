@@ -18,7 +18,7 @@ export function backtestSingle(
     initialCapital = 10000,
     positionPct = 1.0,
     stopLossPct = 0.05,
-    takeProfitPct = 0.1
+    takeProfitPct = 0.1,
   } = {}
 ) {
   let capital = initialCapital;

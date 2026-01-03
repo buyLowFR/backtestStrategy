@@ -1,11 +1,15 @@
-import { smaCrossSignals } from "../strategies/smaCross.js";
+import { getStrategySignals } from "../strategies/strategyFactory.js";
 import { backtestSingle } from "./backtestSingle.js";
 
 export function backtestAll(
   stocks,
   {
-    fast = 10,
-    slow = 20,
+    strategy = "smaCross",
+    fastMA = 20,      // ex: MA20
+    mediumMA = 50,    // ex: MA50
+    slowMA = 200,     // ex: MA200
+    lookback = 5,
+    allowExitSignal= true,
     initialCapital = 10000,
     positionPct = 0.25,
     stopLossPct = 0.05,
@@ -16,7 +20,14 @@ export function backtestAll(
   const allTrades = [];
 
   for (const stock of stocks) {
-    const signals = smaCrossSignals(stock.closes, fast, slow);
+    const signals = getStrategySignals(strategy, stock, {
+      fastMA,
+      mediumMA,
+      slowMA,
+      lookback,
+      allowExitSignal
+    });
+
 
     const stats = backtestSingle(
       stock.closes,
@@ -38,7 +49,11 @@ export function backtestAll(
       finalCapital: stats.finalCapital,
       profit: stats.profit,
       roi: stats.roi,
-      tradesCount: stats.trades.length
+      tradesCount: stats.trades.length,
+      maxDrawdown: stats.maxDrawdown,
+      winrate: stats.winrate,
+      profitFactor: stats.profitFactor,
+      avgRiskReward: stats.avgRiskReward
     });
 
     allTrades.push(...stats.trades);
