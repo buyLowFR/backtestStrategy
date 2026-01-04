@@ -79,6 +79,20 @@ export function globalMetrics(allTrades) {
   };
 }
 
+export function globalPortfolioMetrics(allTrades, equityCurve, initialCapital) {
+  const gm = globalMetrics(allTrades);
+  const mdd = maxDrawdown(equityCurve);
+  const sharpe = sharpeFromEquityCurve(equityCurve);
+
+  return {
+    ...gm,
+    finalCapital: equityCurve[equityCurve.length - 1],
+    roi: (equityCurve[equityCurve.length - 1] / initialCapital - 1) * 100,
+    maxDrawdown: mdd,
+    sharpe
+  };
+}
+
 export function sharpeFromEquityCurve(equityCurve) {
   if (!equityCurve || equityCurve.length < 2) return 0;
 

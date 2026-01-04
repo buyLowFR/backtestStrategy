@@ -9,7 +9,7 @@ export function backtestAll(
     mediumMA = 50,    // ex: MA50
     slowMA = 200,     // ex: MA200
     lookback = 5,
-    allowExitSignal= true,
+    allowExitSignal= false,
     initialCapital = 10000,
     positionPct = 0.25,
     stopLossPct = 0.05,

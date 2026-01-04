@@ -2,8 +2,7 @@ import { loadJSON } from "./src/utils/jsonLoader.js";
 import { normalizeData } from "./src/data/normalize.js";
 import { backtestAll } from "./src/engine/backtestAll.js";
 import { exportTradesToCSV, exportEquityCurveToCSV } from "./src/utils/csvExport.js";
-import { globalMetrics, sharpeFromEquityCurve } from "./src/utils/metrics.js";
-import { maxDrawdown } from "./src/utils/metrics.js";
+import { globalPortfolioMetrics } from "./src/utils/metrics.js";
 
 function main() {
   console.log("=== Chargement des données SBF120 ===");
@@ -41,9 +40,7 @@ function main() {
     equity += trade.pnlAbs;
     globalEquityCurve.push(equity);
   }
-  exportEquityCurveToCSV(globalEquityCurve, "./result/global_equity_curve.csv");
-  const globalMDD = maxDrawdown(globalEquityCurve);
-  const sharpeRatio = sharpeFromEquityCurve(globalEquityCurve)
+  //exportEquityCurveToCSV(globalEquityCurve, "./result/global_equity_curve.csv");
 
 
   console.log("Nombre total de trades :", allTrades.length);
@@ -64,7 +61,7 @@ function main() {
   // 🔥 AJOUT : RÉCAP GLOBAL DE LA STRATÉGIE
   console.log(`\n=== Récap global de la stratégie (toutes actions confondues) ===`);
 
-  const gm = globalMetrics(allTrades);
+  const gm = globalPortfolioMetrics(allTrades, globalEquityCurve, initialCapital);
 
   console.table([{
     "Nombre total de trades": gm.totalTrades,
@@ -72,8 +69,8 @@ function main() {
     "Profit Factor global": gm.profitFactor.toFixed(2),
     "Risk/Reward moyen global": gm.avgRiskReward.toFixed(2),
     "Profit total (toutes actions)": gm.totalProfit.toFixed(2),
-    "Max Drawdown" : globalMDD.toFixed(2) + "%",
-    "Sharpe Ratio" : sharpeRatio.toFixed(2)
+    "Max Drawdown" : gm.maxDrawdown.toFixed(2) + "%",
+    "Sharpe Ratio" : gm.sharpe.toFixed(2)
   }]);
 }
 

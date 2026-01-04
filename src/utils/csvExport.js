@@ -68,3 +68,22 @@ export function exportEquityCurveToCSV(equityCurve, filepath) {
 
   fs.writeFileSync(filepath, header + rows, "utf8");
 }
+
+/**
+ * Convertit un tableau d'objets en CSV et l'écrit dans un fichier.
+ */
+export function exportToCSV(data, filepath) {
+  if (!data || data.length === 0) {
+    fs.writeFileSync(filepath, "No data", "utf8");
+    return;
+  }
+
+  const headers = Object.keys(data[0]);
+  const rows = data.map(obj =>
+    headers.map(h => obj[h]).join(",")
+  );
+
+  const csv = [headers.join(","), ...rows].join("\n");
+
+  fs.writeFileSync(filepath, csv, "utf8");
+}
