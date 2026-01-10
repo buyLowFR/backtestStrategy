@@ -79,17 +79,66 @@ export function globalMetrics(allTrades) {
   };
 }
 
+/**
+ * Calcule la durée moyenne des trades en jours.
+ *
+ * Pourquoi cette fonction existe ?
+ * --------------------------------
+ * Elle permet de comprendre le "rythme" réel de la stratégie :
+ * - une stratégie avec des trades très courts = plus de frais, plus de bruit
+ * - une stratégie avec des trades longs = plus tendance, moins de rotation
+ *
+ * Comment ça marche ?
+ * -------------------
+ * On parcourt tous les trades, on calcule la différence entre la date d'entrée
+ * et la date de sortie, on convertit en jours, puis on fait la moyenne.
+ *
+ * Hypothèses :
+ * ------------
+ * - entryDate et exitDate sont des chaînes compatibles avec new Date()
+ * - chaque trade a bien une entrée et une sortie (pas de trade "ouvert")
+ *
+ * @param {Array} allTrades - Liste de tous les trades du portefeuille
+ * @returns {number} Durée moyenne en jours
+ */
+function calculateAverageTradeDuration(allTrades) {
+  // Si aucun trade, on retourne 0 pour éviter une division par zéro
+  if (allTrades.length === 0) return 0;
+
+  let totalDays = 0;
+
+  for (const t of allTrades) {
+    // Conversion des dates en objets Date
+    const entry = new Date(t.entryDate);
+    const exit = new Date(t.exitDate);
+
+    // Différence en millisecondes
+    const diffMs = exit - entry;
+
+    // Conversion en jours (1000 ms * 60 sec * 60 min * 24 h)
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+    // Accumulation
+    totalDays += diffDays;
+  }
+
+  // Moyenne des durées
+  return totalDays / allTrades.length;
+}
+
 export function globalPortfolioMetrics(allTrades, equityCurve, initialCapital) {
   const gm = globalMetrics(allTrades);
   const mdd = maxDrawdown(equityCurve);
   const sharpe = sharpeFromEquityCurve(equityCurve);
+  const averageTradeDuration = calculateAverageTradeDuration(allTrades)
 
   return {
     ...gm,
     finalCapital: equityCurve[equityCurve.length - 1],
     roi: (equityCurve[equityCurve.length - 1] / initialCapital - 1) * 100,
     maxDrawdown: mdd,
-    sharpe
+    sharpe,
+    averageTradeDuration
   };
 }
 

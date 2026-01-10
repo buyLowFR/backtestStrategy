@@ -1,10 +1,18 @@
 import { runBatch } from "./src/optimizer/batchRunner.js";
-import { normalizeData } from "./src/data/normalize.js";
-import { loadJSON } from "./src/utils/jsonLoader.js";
+import { loadMultipleJSON } from "./src/data/loadData.js";
 
 async function main() {
-  const raw = loadJSON("./src/data/historicSBF120Data.json");
-  const stocks = normalizeData(raw);
+    // Liste de tes fichiers
+  const files = [
+    "./src/data/SP500(1-100).json",
+    "./src/data/SP500(101-200).json",
+    "./src/data/SP500(201-300).json",
+    "./src/data/SP500(301-400).json",
+    "./src/data/SP500(401-500).json"
+  ];
+
+
+  const stocks = loadMultipleJSON(files);
 
   const results = runBatch(stocks, {
     strategy: "breakout",
