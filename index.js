@@ -26,7 +26,7 @@ function main() {
     equityCurve,
     allTrades
   } = backtestPortfolio(stocks, {
-    strategy: "breakout",
+    strategy: "pivotBreakout",
     fastMA: 20,
     mediumMA: 50,
     slowMA: 200,
@@ -35,7 +35,9 @@ function main() {
     initialCapital,
     positionPct: 0.1,
     stopLossPct: 0.05,
-    takeProfitPct: 0.25
+    takeProfitPct: 0.05,
+    lenHigh: 5,
+    pivotLife : 30
   });
 
   exportEquityCurveToCSV(equityCurve, "./result/global_equity_curve.csv");

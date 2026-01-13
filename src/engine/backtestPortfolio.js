@@ -8,6 +8,8 @@ export function backtestPortfolio(
     mediumMA = 50,
     slowMA = 200,
     lookback = 5,
+    lenHigh = 5,
+    pivotLife = 5,
     allowExitSignal = false,
     initialCapital = 10000,
     positionPct = 0.1,
@@ -28,7 +30,9 @@ export function backtestPortfolio(
       mediumMA,
       slowMA,
       lookback,
-      allowExitSignal
+      allowExitSignal,
+      lenHigh,
+      pivotLife
     })
   }));
 
