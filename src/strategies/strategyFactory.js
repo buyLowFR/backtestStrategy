@@ -1,6 +1,7 @@
 import { tripleMASignals } from "./smaCross.js";
 import { highBreakoutSignals } from "./highBreakout.js";
 import { pivotBreakoutSignals } from "./pivotBreakout.js";
+import { ribbonBreakoutSignals } from "./ribbonBreakout.js";
 
 export function getStrategySignals(strategyName, stock, options) {
   switch (strategyName) {
@@ -33,6 +34,15 @@ export function getStrategySignals(strategyName, stock, options) {
           trendMA: options.slowMA
         }
       );
+    
+    case "ribbonBreakout" :
+      return ribbonBreakoutSignals(stock,{
+        fastPeriodHigh: options.fastPeriodHigh,
+        fastPeriodLow : options.fastPeriodLow,
+        slowMA : options.slowMA,
+        allowExitSignal: options.allowExitSignal,
+      })
+    
 
     default:
       throw new Error(`Stratégie inconnue : ${strategyName}`);

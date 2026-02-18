@@ -7,11 +7,12 @@ function main() {
   console.log("=== Chargement des données SP500 ===");
 
   const files = [
-    "./src/data/SP500(1-100).json",
-    "./src/data/SP500(101-200).json",
-    "./src/data/SP500(201-300).json",
-    "./src/data/SP500(301-400).json",
-    "./src/data/SP500(401-500).json"
+    "./src/data/SP500(1-50).json",
+    //"./src/data/SP500(1-100).json",
+    //"./src/data/SP500(101-200).json",
+    //"./src/data/SP500(201-300).json",
+    //"./src/data/SP500(301-400).json",
+    //"./src/data/SP500(401-500).json"
   ];
 
   const stocks = loadMultipleJSON(files);
@@ -26,18 +27,20 @@ function main() {
     equityCurve,
     allTrades
   } = backtestPortfolio(stocks, {
-    strategy: "pivotBreakout",
+    strategy: "ribbonBreakout",
     fastMA: 20,
     mediumMA: 50,
-    slowMA: 200,
+    slowMA: 150,
     lookback: 5,
     allowExitSignal: false,
     initialCapital,
     positionPct: 0.1,
     stopLossPct: 0.05,
-    takeProfitPct: 0.05,
-    lenHigh: 5,
-    pivotLife : 30
+    takeProfitPct: 0.15,
+    lenHigh: 3,
+    pivotLife : 15,
+    fastPeriodHigh: 20,
+    fastPeriodLow : 20
   });
 
   exportEquityCurveToCSV(equityCurve, "./result/global_equity_curve.csv");
