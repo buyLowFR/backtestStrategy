@@ -29,6 +29,10 @@ import { SMA } from "../utils/indicators.js";
  * trendMA :
  *    → période de la moyenne mobile utilisée comme filtre de tendance
  *    → BUY uniquement si prix > MA(trendMA)
+ * 
+ * requireHigherHigh :
+ *    → si true : on n'entre que si le pivot actuel est PLUS HAUT que le pivot précédent.
+ *    → permet de ne trader que les structures haussières (higher highs).
  *
  * @returns {string[]} Tableau de signaux : "buy" | "sell" | "hold"
  */
@@ -39,7 +43,8 @@ export function pivotBreakoutSignals(
     lenHigh = 5,
     pivotLife = 30,
     allowExitSignal = true,
-    trendMA = 200
+    trendMA = 200, 
+    requireHigherHigh = false
   } = {}
 ) {
   const signals = Array(closes.length).fill("hold");
@@ -48,6 +53,7 @@ export function pivotBreakoutSignals(
   const maTrend = SMA(closes, trendMA);
 
   let pivotY = null;      // valeur du pivot
+  let lastPivotY = null // Dernier pivot cassé (validé)
   let pivotIndex = null;  // index du pivot
   let pivotActive = false;
 
@@ -86,9 +92,13 @@ export function pivotBreakoutSignals(
       // --- Filtre MA200 : prix doit être > MA200 ---
       const trendOK = maTrend[i] && price > maTrend[i];
 
+      // --- Condition Higher High ----
+      const higherHighOK = !requireHigherHigh || lastPivotY === null || pivotY > lastPivotY
+
       // 3) Cassure haussière → BUY si tendance OK
-      if (price > pivotY && trendOK) {
+      if (price > pivotY && trendOK && higherHighOK) {
         signals[i] = "buy";
+        lastPivotY = pivotY
         pivotActive = false;
       }
 

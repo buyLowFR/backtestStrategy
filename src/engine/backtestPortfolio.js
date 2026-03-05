@@ -11,10 +11,12 @@ export function backtestPortfolio(
     lenHigh = 5,
     pivotLife = 5,
     allowExitSignal = false,
+    requireHigherHigh = false,
     initialCapital = 10000,
     positionPct = 0.1,
     stopLossPct = 0.05,
-    takeProfitPct = 0.25
+    takeProfitPct = 0.25,
+    tradeProbability = 1
   } = {}
 ) {
   let capital = initialCapital;
@@ -32,7 +34,8 @@ export function backtestPortfolio(
       lookback,
       allowExitSignal,
       lenHigh,
-      pivotLife
+      pivotLife,
+      requireHigherHigh
     })
   }));
 
@@ -99,7 +102,7 @@ export function backtestPortfolio(
       }
 
       // BUY
-      if (signal === "buy" && !hasPosition) {
+      if (signal === "buy" && !hasPosition && Math.random()<=tradeProbability) {
         // Montant fixe basé sur le capital initial (et non le capital restant)
         const amountToInvest = initialCapital * positionPct;
 

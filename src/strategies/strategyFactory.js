@@ -31,7 +31,8 @@ export function getStrategySignals(strategyName, stock, options) {
           pivotLife: options.pivotLife,
           lenHigh: options.lenHigh,
           allowExitSignal: options.allowExitSignal,
-          trendMA: options.slowMA
+          trendMA: options.slowMA,
+          requireHigherHigh: options.requireHigherHigh
         }
       );
     
