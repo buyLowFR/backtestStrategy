@@ -21,7 +21,7 @@ async function main() {
   const stocks = loadMultipleJSON(files);
 
   const results = runBatch(stocks, {
-    strategy: "smaCross", //"pivotBreakout",
+    strategy: "pivotBreakout", //"smaCross",
     vary: {
       //lookback: [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19, 20,25, 30,35,40,45, 50],
       //tradeProbability: [0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2]
@@ -34,7 +34,7 @@ async function main() {
       //requireHigherHigh: [true, false]
     },
     baseOptions: {
-      strategy : "smaCross",//"pivotBreakout",
+      strategy : "pivotBreakout",//"smaCross",
       fastMA: 20,
       mediumMA: 50,
       slowMA: 200,

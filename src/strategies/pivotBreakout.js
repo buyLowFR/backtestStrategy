@@ -38,13 +38,15 @@ import { SMA } from "../utils/indicators.js";
  */
 
 export function pivotBreakoutSignals(
-  closes,
+  {closes, highs, opens},
   {
     lenHigh = 5,
     pivotLife = 30,
     allowExitSignal = true,
     trendMA = 200, 
-    requireHigherHigh = false
+    requireHigherHigh = false,
+    priceSource = "close",
+    requireGap = false
   } = {}
 ) {
   const signals = Array(closes.length).fill("hold");
@@ -56,16 +58,19 @@ export function pivotBreakoutSignals(
   let lastPivotY = null // Dernier pivot cassé (validé)
   let pivotIndex = null;  // index du pivot
   let pivotActive = false;
+  
+  // choix de la détection du pivot (close ou high)
+  const serie = priceSource === "high" ? highs : closes
 
   // --- Détection pivot haut (équivalent ta.pivothigh) ---
   function isPivotHigh(i) {
-    if (i < lenHigh || i > closes.length - lenHigh - 1) return false;
+    if (i < lenHigh || i > serie.length - lenHigh - 1) return false;
 
-    const center = closes[i];
+    const center = serie[i];
 
     for (let k = 1; k <= lenHigh; k++) {
-      if (closes[i - k] >= center) return false;
-      if (closes[i + k] >= center) return false;
+      if (serie[i - k] >= center) return false;
+      if (serie[i + k] >= center) return false;
     }
     return true;
   }
@@ -75,7 +80,7 @@ export function pivotBreakoutSignals(
 
     // 1) Nouveau pivot confirmé
     if (isPivotHigh(i)) {
-      pivotY = closes[i];
+      pivotY = serie[i];
       pivotIndex = i;
       pivotActive = true;
     }
@@ -95,8 +100,11 @@ export function pivotBreakoutSignals(
       // --- Condition Higher High ----
       const higherHighOK = !requireHigherHigh || lastPivotY === null || pivotY > lastPivotY
 
+      // --- Condition d'ouverture en gap ---
+      const gapOk = !requireGap || (i>0 && opens[i]>closes[i-1])
+
       // 3) Cassure haussière → BUY si tendance OK
-      if (price > pivotY && trendOK && higherHighOK) {
+      if (price > pivotY && trendOK && higherHighOK && gapOk) {
         signals[i] = "buy";
         lastPivotY = pivotY
         pivotActive = false;

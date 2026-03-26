@@ -16,7 +16,9 @@ export function backtestPortfolio(
     positionPct = 0.1,
     stopLossPct = 0.05,
     takeProfitPct = 0.25,
-    tradeProbability = 1
+    tradeProbability = 1,
+    priceSource = "close",
+    requireGap = false
   } = {}
 ) {
   let capital = initialCapital;
@@ -35,7 +37,9 @@ export function backtestPortfolio(
       allowExitSignal,
       lenHigh,
       pivotLife,
-      requireHigherHigh
+      requireHigherHigh,
+      priceSource,
+      requireGap
     })
   }));
 

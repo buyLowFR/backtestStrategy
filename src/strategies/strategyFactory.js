@@ -26,13 +26,19 @@ export function getStrategySignals(strategyName, stock, options) {
 
     case "pivotBreakout":
       return pivotBreakoutSignals(
-        stock.closes,
+        {
+          closes :stock.closes,
+          highs : stock.highs,
+          opens : stock.opens
+        },
         { 
           pivotLife: options.pivotLife,
           lenHigh: options.lenHigh,
           allowExitSignal: options.allowExitSignal,
           trendMA: options.slowMA,
-          requireHigherHigh: options.requireHigherHigh
+          requireHigherHigh: options.requireHigherHigh,
+          priceSource : options.priceSource,
+          requireGap : options.requireGap
         }
       );
     
