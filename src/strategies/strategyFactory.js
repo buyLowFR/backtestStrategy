@@ -2,6 +2,7 @@ import { tripleMASignals } from "./smaCross.js";
 import { highBreakoutSignals } from "./highBreakout.js";
 import { pivotBreakoutSignals } from "./pivotBreakout.js";
 import { ribbonBreakoutSignals } from "./ribbonBreakout.js";
+import {pivotBreakoutWeeklyFilter} from "./pivotBreakoutWeeklyFilter.js"
 
 export function getStrategySignals(strategyName, stock, options) {
   switch (strategyName) {
@@ -50,6 +51,25 @@ export function getStrategySignals(strategyName, stock, options) {
         allowExitSignal: options.allowExitSignal,
       })
     
+    case "pivotBreakoutWeekly":
+      return pivotBreakoutWeeklyFilter(
+        {
+          closes: stock.closes,
+          highs: stock.highs,
+          opens: stock.opens
+        },
+        stock.weeklyBars,   // ← tu dois les ajouter dans ton loader
+        stock.weeklyMap,    // ← idem
+        {
+          pivotLife: options.pivotLife,
+          lenHigh: options.lenHigh,
+          allowExitSignal: options.allowExitSignal,
+          trendMA: options.slowMA,
+          requireHigherHigh: options.requireHigherHigh,
+          priceSource: options.priceSource,
+          requireGap: options.requireGap
+        }
+      );
 
     default:
       throw new Error(`Stratégie inconnue : ${strategyName}`);

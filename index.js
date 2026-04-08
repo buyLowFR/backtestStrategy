@@ -19,6 +19,19 @@ function main() {
     "./src/data/SP500(451-500).json",
   ];
 
+  /**    
+    "./src/data/SP500(1-50).json",
+    "./src/data/SP500(51-100).json",
+    "./src/data/SP500(101-150).json",
+    "./src/data/SP500(151-200).json",
+    "./src/data/SP500(201-250).json",
+    "./src/data/SP500(251-300).json",
+    "./src/data/SP500(301-350).json",
+    "./src/data/SP500(351-400).json",
+    "./src/data/SP500(401-450).json",
+    "./src/data/SP500(451-500).json",
+   */
+
   /**     
     "./src/data/W_SP500(1-50).json",
     "./src/data/W_SP500(51-100).json",
@@ -44,16 +57,16 @@ function main() {
     equityCurve,
     allTrades
   } = backtestPortfolio(stocks, {
-    strategy: "pivotBreakout", //"ribbonBreakout" "pivotBreakout"
+    strategy: "pivotBreakoutWeekly", //"ribbonBreakout" "pivotBreakout" "pivotBreakoutWeekly"
     fastMA: 20,
     mediumMA: 50,
-    slowMA: 150,
+    slowMA: 200,
     lookback: 5,
     allowExitSignal: false,
     initialCapital,
     positionPct: 0.1,
     stopLossPct: 0.05,
-    takeProfitPct: 0.1,
+    takeProfitPct: 0.15,
     lenHigh: 3,
     pivotLife : 15,
     fastPeriodHigh: 20,
